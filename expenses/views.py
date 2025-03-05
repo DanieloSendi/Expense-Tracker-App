@@ -6,7 +6,7 @@ from .models import Expense
 from django.shortcuts import get_object_or_404, redirect
 from .forms import ExpenseForm
 
-@login_required
+
 def home(request):
     return render(request, "expenses/home.html")
 
