@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Your expenditures</h2>
+<a href="{% url 'expense-create' %}">Add a new expense</a>
+<table border="1">
+    <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+    {% for expense in expenses %}
+    <tr>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.amount }}</td>
+        <td>{{ expense.date }}</td>
+        <td>{{ expense.description }}</td>
+        <td>
+            <a href="{% url 'expense-update' expense.pk %}">Edit</a>
+            <a href="{% url 'expense-delete' expense.pk %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

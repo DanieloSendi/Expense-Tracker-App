@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Are you sure you want to remove this expense?</h2>
+<p>Category: {{ expense.category }}</p>
+<p>Amount: {{ expense.amount }}</p>
+<p>Date: {{ expense.date }}</p>
+<p>Description: {{ expense.description }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+<a href="{% url 'expense-list' %}">Cancel</a>
+{% endblock %}
