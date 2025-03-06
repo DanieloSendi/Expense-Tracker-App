@@ -2,7 +2,8 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
-
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -19,3 +20,11 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"{self.amount} - {self.category} ({self.date})"
+
+
+@receiver(post_migrate)
+def create_default_categories(sender, **kwargs):
+    if sender.name == "expenses":
+        default_categories = ["Food", "Transport"]
+        for category_name in default_categories:
+            Category.objects.get_or_create(name=category_name)
