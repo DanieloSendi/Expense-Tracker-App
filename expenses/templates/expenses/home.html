@@ -1,5 +1,11 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h2>Welcome to Expense Tracker!</h2>
 <p>Your expense-tracking application.</p>
+<p>
+    <button>
+        <a href="{% url 'expense-list' %}">Expense list</a>
+    </button>
+</p>
 {% endblock %}
