@@ -3,11 +3,12 @@ from django.shortcuts import render
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from .models import Expense, Budget
-from django.shortcuts import get_object_or_404, redirect
 from .forms import ExpenseForm, BudgetForm
+from django.shortcuts import get_object_or_404, redirect
 from django.db import models
 import csv
 from django.http import HttpResponse
+
 
 @login_required
 def home(request):
@@ -100,6 +101,5 @@ def export_expenses_csv(request):
 
     expenses = Expense.objects.filter(user=request.user).order_by("-date")
     for expense in expenses:
-        writer.writerow([expense.category, expense.amount, expense.date, expense.description])
-        
+        writer.writerow([expense.category, expense.amount, expense.date, expense.description])  
     return response

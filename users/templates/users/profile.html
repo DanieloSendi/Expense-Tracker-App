@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block content %}
+<h2>Edit profile</h2>
+
+<ul>
+  <li><a href="{% url 'profile' %}?tab=info">User data</a></li>
+  <li><a href="{% url 'profile' %}?tab=password">Changing password</a></li>
+</ul>
+
+{% if request.GET.tab == "password" %}
+<h3>Change password</h3>
+<form method="POST">
+  {% csrf_token %} {{ password_form.as_p }}
+  <button type="submit">Change password</button>
+</form>
+{% else %}
+<h3>User data</h3>
+<form method="POST">
+  {% csrf_token %} {{ user_form.as_p }}
+  <button type="submit">Save changes</button>
+</form>
+{% endif %}
+
+<a href="{% url 'expenses-home' %}">Back home</a>
+{% endblock %}

@@ -2,32 +2,28 @@
 
 <!DOCTYPE html>
 <html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Expense Tracker</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Expense Tracker</title>
-</head>
+  <body>
+    <nav>
+      {% if user.is_authenticated %}
+      <button><a href="{% url 'profile' %}">Profil</a></button>
+      <button><a href="{% url 'logout' %}">Log out</a></button>
+      <button><a href="{% url 'expenses-home' %}">Expense home</a></button>
+      <button><a href="{% url 'login' %}">Log in</a></button>
+      <button><a href="{% url 'register' %}">Registration</a></button>
+      <button><a href="{% url 'budget' %}">Set a budget</a></button>
+      {% else %}
+      <button><a href="{% url 'login' %}">Log in</a></button> |
+      <button><a href="{% url 'register' %}">Registration</a></button>
+      {% endif %}
+    </nav>
 
-<body>
-  <nav>
-    {% if user.is_authenticated %}
-    <button><a href="{% url 'logout' %}">Log out</a></button>
-    <button><a href="{% url 'expenses-home' %}">Expense home</a></button>
-    <button><a href="{% url 'login' %}">Log in</a></button>
-    <button><a href="{% url 'register' %}">Registration</a></button>
-    <button><a href="{% url 'budget' %}">Set a budget</a></button>
-    {% else %}
-    <button><a href="{% url 'login' %}">Log in</a></button> |
-    <button><a href="{% url 'register' %}">Registration</a></button>
-    {% endif %}
-  </nav>
+    <hr />
 
-  <hr />
-
-  <main>
-    {% block content %} {% endblock %}
-  </main>
-
-</body>
-
+    <main>{% block content %} {% endblock %}</main>
+  </body>
 </html>

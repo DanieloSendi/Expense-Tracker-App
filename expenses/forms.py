@@ -1,6 +1,7 @@
 from django import forms
 from .models import Expense, Budget
 
+
 class ExpenseForm(forms.ModelForm):
     date = forms.DateField(
         widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),  
