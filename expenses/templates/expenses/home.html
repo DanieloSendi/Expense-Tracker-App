@@ -1,11 +1,14 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h2>Welcome to Expense Tracker!</h2>
-<p>Your expense-tracking application.</p>
 
 {% if budget_status %}
 <p><strong>{{ budget_status }}</strong></p>
 {% endif %}
 
-<p><button><a href="{% url 'expense-list' %}">Expense list</a></button></p>
+<p><strong>💰 Budget:</strong> {{ budget }} PLN</p>
+<p><strong>💸 Expenses:</strong> {{ total_spent }} PLN</p>
+<p><strong>📊 Balance (Budget - Expenses):</strong> {{ balance }} PLN</p>
+
+<a href="{% url 'expense-list' %}">View Expenses</a> |
+<a href="{% url 'budget' %}">Set Budget</a>
 {% endblock %}

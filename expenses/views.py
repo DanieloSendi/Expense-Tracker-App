@@ -6,13 +6,16 @@ from .models import Expense, Budget
 from django.shortcuts import get_object_or_404, redirect
 from .forms import ExpenseForm, BudgetForm
 from django.db import models
-
+import csv
+from django.http import HttpResponse
 
 @login_required
 def home(request):
     expenses = Expense.objects.filter(user=request.user)
     budget = Budget.objects.filter(user=request.user).first()
+
     total_spent = expenses.aggregate(models.Sum("amount"))["amount__sum"] or 0
+    balance = budget.amount - total_spent if budget else 0  # Obliczamy, ile jeszcze zostało w budżecie
 
     budget_status = None
     if budget:
@@ -23,15 +26,22 @@ def home(request):
             budget_status = "🟡 You're close to exceeding your budget!"
         else:
             budget_status = f"🟢 Used {percent_used:.2f}% of the budget."
-    return render(request, "expenses/home.html", {"expenses": expenses, "budget_status": budget_status})
 
-# Takes all the expenses of a logged-in user and sorts them descending by date.
+    return render(request, "expenses/home.html", {
+        "expenses": expenses,
+        "total_spent": total_spent,
+        "budget": budget.amount if budget else None,
+        "balance": balance,
+        "budget_status": budget_status
+    })
+
+# Takes all the expenses of a logged-in user and sorts them descending by date
 @login_required
 def expense_list(request):
     expenses = Expense.objects.filter(user=request.user).order_by("-date")
     return render(request, "expenses/expense_list.html", {"expenses": expenses})
 
-# Creates a new expense and assigns it to the currently logged-in user.
+# Creates a new expense and assigns it to the currently logged-in user
 @login_required
 def expense_create(request):
     if request.method == "POST":
@@ -45,7 +55,7 @@ def expense_create(request):
         form = ExpenseForm()
     return render(request, "expenses/expense_form.html", {"form": form})
 
-# It retrieves the expense from the database and allows you to edit it.
+# It retrieves the expense from the database and allows you to edit it
 @login_required
 def expense_update(request, pk):
     expense = get_object_or_404(Expense, pk=pk, user=request.user)
@@ -58,7 +68,7 @@ def expense_update(request, pk):
         form = ExpenseForm(instance=expense)
     return render(request, "expenses/expense_form.html", {"form": form})
 
-# Deletes the expense only if the user confirms it.
+# Deletes the expense only if the user confirms it
 @login_required
 def expense_delete(request, pk):
     expense = get_object_or_404(Expense, pk=pk, user=request.user)
@@ -66,7 +76,6 @@ def expense_delete(request, pk):
         expense.delete()
         return redirect("expense-list")
     return render(request, "expenses/expense_confirm_delete.html", {"expense": expense})
-
 
 @login_required
 def budget_view(request):
@@ -79,3 +88,18 @@ def budget_view(request):
     else:
         form = BudgetForm(instance=budget)
     return render(request, "expenses/budget_form.html", {"form": form})
+
+@login_required
+def export_expenses_csv(request):
+    """Exports user's expenses to CSV file."""
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="expenses.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(["Category", "Amount", "Date", "Description"])
+
+    expenses = Expense.objects.filter(user=request.user).order_by("-date")
+    for expense in expenses:
+        writer.writerow([expense.category, expense.amount, expense.date, expense.description])
+        
+    return response

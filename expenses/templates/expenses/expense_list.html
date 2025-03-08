@@ -1,8 +1,8 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <h2>Your expenses</h2>
 <a href="{% url 'expense-create' %}">Add a new expense</a>
+<a href="{% url 'export-csv' %}">📥 Download the expenses (CSV)</a>
 <table border="1">
     <tr>
         <th>Category</th>

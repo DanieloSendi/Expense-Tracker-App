@@ -23,6 +23,7 @@ class Expense(models.Model):
     def __str__(self):
         return f"{self.amount} - {self.category} ({self.date})"
 
+
 @receiver(post_migrate)
 def create_default_categories(sender, **kwargs):
     if sender.name == "expenses":
@@ -37,4 +38,5 @@ class Budget(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # The amount of monthly budget
 
     def __str__(self):
-        return f"Budget {self.user.username}: {self.amount} PLN"
+        return f"Budget {self.user.username}: {self.amount}"
+    
