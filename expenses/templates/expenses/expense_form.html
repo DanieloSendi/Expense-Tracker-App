@@ -1,9 +1,18 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Add/Edit expense</h2>
-<form method="POST">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
-<a href="{% url 'expense-list' %}">Cancel</a>
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h2 class="mb-4">➕ Add Expense</h2>
+
+  <div class="card p-4">
+    <form method="POST">
+      {% csrf_token %} {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">💾 Save Expense</button>
+      <a href="{% url 'expense-list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
 {% endblock %}

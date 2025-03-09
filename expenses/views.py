@@ -10,31 +10,36 @@ import csv
 from django.http import HttpResponse
 
 
-@login_required
 def home(request):
-    expenses = Expense.objects.filter(user=request.user)
-    budget = Budget.objects.filter(user=request.user).first()
+    if request.user.is_authenticated:
+        expenses = Expense.objects.filter(user=request.user)
+        budget = Budget.objects.filter(user=request.user).first()
 
-    total_spent = expenses.aggregate(models.Sum("amount"))["amount__sum"] or 0
-    balance = budget.amount - total_spent if budget else 0  # Obliczamy, ile jeszcze zostało w budżecie
+        total_spent = expenses.aggregate(models.Sum("amount"))["amount__sum"] or 0
+        balance = budget.amount - total_spent if budget else 0
 
-    budget_status = None
-    if budget:
-        percent_used = (total_spent / budget.amount) * 100 if budget.amount > 0 else 0
-        if percent_used > 100:
-            budget_status = "🔴 You've gone over budget!"
-        elif percent_used > 80:
-            budget_status = "🟡 You're close to exceeding your budget!"
-        else:
-            budget_status = f"🟢 Used {percent_used:.2f}% of the budget."
+        budget_status = None
+        if budget:
+            percent_used = (total_spent / budget.amount) * 100 if budget.amount > 0 else 0
+            if percent_used > 100:
+                budget_status = "🔴 You've gone over budget!"
+            elif percent_used > 80:
+                budget_status = "🟡 You're close to exceeding your budget!"
+            else:
+                budget_status = f"🟢 Used {percent_used:.2f}% of the budget."
+        
+        context = {
+            "expenses": expenses,
+            "total_spent": total_spent,
+            "budget": budget.amount if budget else None,
+            "balance": balance,
+            "budget_status": budget_status,
+        }
+    else:
+        # For non-logged-in users
+        context = {}
 
-    return render(request, "expenses/home.html", {
-        "expenses": expenses,
-        "total_spent": total_spent,
-        "budget": budget.amount if budget else None,
-        "balance": balance,
-        "budget_status": budget_status
-    })
+    return render(request, "expenses/home.html", context)
 
 # Takes all the expenses of a logged-in user and sorts them descending by date
 @login_required

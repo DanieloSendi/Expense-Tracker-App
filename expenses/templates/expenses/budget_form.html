@@ -1,9 +1,20 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Set a monthly budget</h2>
-<form method="POST">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
-<a href="{% url 'expenses-home' %}">Cancel</a>
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h2 class="mb-4">💰 Set your monthly budget</h2>
+
+  <div class="card p-4">
+    <form method="POST">
+      {% csrf_token %} {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">💾 Save Budget</button>
+      <a href="{% url 'expenses-home' %}" class="btn btn-secondary"
+        >↩ Cancel and back</a
+      >
+    </form>
+  </div>
+</div>
 {% endblock %}

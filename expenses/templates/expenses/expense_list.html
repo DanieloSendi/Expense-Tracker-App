@@ -1,27 +1,51 @@
 {% extends "base.html" %} {% block content %}
+<div class="container">
+  <h2 class="mb-4">📋 Your Expenses</h2>
+  <a href="{% url 'expense-create' %}" class="btn btn-success mb-3"
+    >➕ Add New Expense</a
+  >
+  <a href="{% url 'export-csv' %}" class="btn btn-success mb-3"
+    >📥 Download the expenses (CSV)</a
+  >
 
-<h2>Your expenses</h2>
-<a href="{% url 'expense-create' %}">Add a new expense</a>
-<a href="{% url 'export-csv' %}">📥 Download the expenses (CSV)</a>
-<table border="1">
-    <tr>
-        <th>Category</th>
-        <th>Amount</th>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Action</th>
-    </tr>
-    {% for expense in expenses %}
-    <tr>
-        <td>{{ expense.category }}</td>
-        <td>{{ expense.amount }}</td>
-        <td>{{ expense.date }}</td>
-        <td>{{ expense.description }}</td>
-        <td>
-            <a href="{% url 'expense-update' expense.pk %}">Edit</a>
-            <a href="{% url 'expense-delete' expense.pk %}">Delete</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+  {% if expenses %}
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for expense in expenses %}
+        <tr>
+          <td>{{ expense.category }}</td>
+          <td>{{ expense.amount }} PLN</td>
+          <td>{{ expense.date }}</td>
+          <td>{{ expense.description }}</td>
+          <td>
+            <a
+              href="{% url 'expense-update' expense.id %}"
+              class="btn btn-warning btn-sm"
+              >✏️ Edit</a
+            >
+            <a
+              href="{% url 'expense-delete' expense.id %}"
+              class="btn btn-danger btn-sm"
+              >🗑️ Delete</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="alert alert-warning">No expenses found. Start adding some!</p>
+  {% endif %}
+</div>
 {% endblock %}

@@ -1,14 +1,15 @@
 {% extends "base.html" %} {% block content %}
 <h2>Welcome to Expense Tracker!</h2>
 
-{% if budget_status %}
+{% if user.is_authenticated %} {% if budget_status %}
 <p><strong>{{ budget_status }}</strong></p>
 {% endif %}
-
 <p><strong>💰 Budget:</strong> {{ budget }} PLN</p>
 <p><strong>💸 Expenses:</strong> {{ total_spent }} PLN</p>
 <p><strong>📊 Balance (Budget - Expenses):</strong> {{ balance }} PLN</p>
-
 <a href="{% url 'expense-list' %}">View Expenses</a> |
 <a href="{% url 'budget' %}">Set Budget</a>
-{% endblock %}
+{% else %}
+<p><strong>You need to log in to track your expenses.</strong></p>
+
+{% endif %} {% endblock %}

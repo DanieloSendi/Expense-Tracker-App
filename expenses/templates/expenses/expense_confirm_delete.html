@@ -1,14 +1,21 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Are you sure you want to remove this expense?</h2>
-<p>Category: {{ expense.category }}</p>
-<p>Amount: {{ expense.amount }}</p>
-<p>Date: {{ expense.date }}</p>
-<p>Description: {{ expense.description }}</p>
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h2 class="mb-4 text-danger">⚠️ Confirm Deletion</h2>
 
-<form method="POST">
-    {% csrf_token %}
-    <button type="submit">Delete</button>
-</form>
-<a href="{% url 'expense-list' %}">Cancel</a>
+  <div class="card p-4">
+    <p>Are you sure you want to delete this expense?</p>
+    <ul>
+      <li><strong>Category:</strong> {{ expense.category }}</li>
+      <li><strong>Amount:</strong> {{ expense.amount }} PLN</li>
+      <li><strong>Date:</strong> {{ expense.date }}</li>
+      <li><strong>Description:</strong> {{ expense.description }}</li>
+    </ul>
+
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">🗑️ Yes, delete</button>
+      <a href="{% url 'expense-list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
 {% endblock %}
