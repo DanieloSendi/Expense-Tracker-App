@@ -1,15 +1,63 @@
 {% extends "base.html" %} {% block content %}
-<h2>Welcome to Expense Tracker!</h2>
+<div class="container">
+  <h1 class="text-center my-4">💰 Welcome to Expense Tracker!</h1>
 
-{% if user.is_authenticated %} {% if budget_status %}
-<p><strong>{{ budget_status }}</strong></p>
-{% endif %}
-<p><strong>💰 Budget:</strong> {{ budget }} PLN</p>
-<p><strong>💸 Expenses:</strong> {{ total_spent }} PLN</p>
-<p><strong>📊 Balance (Budget - Expenses):</strong> {{ balance }} PLN</p>
-<a href="{% url 'expense-list' %}">View Expenses</a> |
-<a href="{% url 'budget' %}">Set Budget</a>
-{% else %}
-<p><strong>You need to log in to track your expenses.</strong></p>
+  {% if user.is_authenticated %}
+  <div class="row">
+    <!-- Status budżetu -->
+    {% if budget_status %}
+    <div class="col-md-12">
+      <div class="alert alert-info text-center">
+        <strong>{{ budget_status }}</strong>
+      </div>
+    </div>
+    {% endif %}
 
-{% endif %} {% endblock %}
+    <!-- Karty z podsumowaniem finansów -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-header">Budget</div>
+        <div class="card-body">
+          <h4 class="card-title">💰 {{ budget }} PLN</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-danger mb-3">
+        <div class="card-header">Expenses</div>
+        <div class="card-body">
+          <h4 class="card-title">💸 {{ total_spent }} PLN</h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-header">Balance</div>
+        <div class="card-body">
+          <h4 class="card-title">📊 {{ balance }} PLN</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Przyciski nawigacyjne -->
+  <div class="text-center mt-4">
+    <a href="{% url 'expense-list' %}" class="btn btn-outline-primary"
+      >📄 View Expenses</a
+    >
+    <a href="{% url 'budget' %}" class="btn btn-outline-secondary"
+      >⚙️ Set Budget</a
+    >
+  </div>
+
+  {% else %}
+  <div class="alert alert-warning text-center">
+    <p><strong>You need to log in to track your expenses.</strong></p>
+    <a href="{% url 'login' %}" class="btn btn-primary">🔑 Log in</a>
+    <a href="{% url 'register' %}" class="btn btn-success">📝 Sign up</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
