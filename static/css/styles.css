@@ -1,0 +1,15 @@
+:root {
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #212529;
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-bg: #121212;
+  --bs-body-color: #ffffff;
+}
+
+.dropdown-item.active {
+  font-weight: bold;
+  background-color: #007bff;
+  color: white;
+}
