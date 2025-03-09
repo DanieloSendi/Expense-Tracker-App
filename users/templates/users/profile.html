@@ -1,24 +1,42 @@
 {% extends "base.html" %} {% block content %}
-<h2>Edit profile</h2>
+<div class="container">
+  <h2 class="mb-4">👤 Your Profile</h2>
 
-<ul>
-  <li><a href="{% url 'profile' %}?tab=info">User data</a></li>
-  <li><a href="{% url 'profile' %}?tab=password">Changing password</a></li>
-</ul>
+  {% if messages %} {% for message in messages %}
+  <p class="alert alert-success">{{ message }}</p>
+  {% endfor %} {% endif %}
 
-{% if request.GET.tab == "password" %}
-<h3>Change password</h3>
-<form method="POST">
-  {% csrf_token %} {{ password_form.as_p }}
-  <button type="submit">Change password</button>
-</form>
-{% else %}
-<h3>User data</h3>
-<form method="POST">
-  {% csrf_token %} {{ user_form.as_p }}
-  <button type="submit">Save changes</button>
-</form>
-{% endif %}
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a
+        class="nav-link {% if request.GET.tab == 'info' or not request.GET.tab %}active{% endif %}"
+        href="{% url 'profile' %}?tab=info"
+        >Profile Info</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link {% if request.GET.tab == 'password' %}active{% endif %}"
+        href="{% url 'profile' %}?tab=password"
+        >Change Password</a
+      >
+    </li>
+  </ul>
 
-<a href="{% url 'expenses-home' %}">Back home</a>
+  <div class="card p-4">
+    {% if request.GET.tab == "password" %}
+    <h3>🔑 Change Password</h3>
+    <form method="POST">
+      {% csrf_token %} {{ password_form.as_p }}
+      <button type="submit" class="btn btn-warning">🔄 Update Password</button>
+    </form>
+    {% else %}
+    <h3>📧 Update Email</h3>
+    <form method="POST">
+      {% csrf_token %} {{ user_form.as_p }}
+      <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

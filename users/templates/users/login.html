@@ -1,11 +1,21 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h2 class="mb-4">🔐 Log In</h2>
 
-<h2>Logging</h2>
-<form method="POST">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Log in</button>
-</form>
-<p>Do you not have an account? <a href="{% url 'register' %}">Sign up</a></p>
+  <div class="card p-4">
+    <form method="POST">
+      {% csrf_token %} {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">🚀 Log In</button>
+    </form>
+  </div>
 
+  <p class="mt-3">
+    Do you not have an account? <a href="{% url 'register' %}">Sign up</a>
+  </p>
+</div>
 {% endblock %}
