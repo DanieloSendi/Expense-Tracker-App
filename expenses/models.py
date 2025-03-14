@@ -21,7 +21,7 @@ class Expense(models.Model):
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.amount} - {self.category} ({self.date})"
+        return f"{self.amount:.2f} - {self.category} ({self.date})"
 
 
 @receiver(post_migrate)
