@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator
 
 
 class Category(models.Model):
@@ -35,7 +36,7 @@ def create_default_categories(sender, **kwargs):
 # Storage of the user's budget
 class Budget(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # One budget per user
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # The amount of monthly budget
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, validators=[MinValueValidator(0.00)])  # The amount of monthly budget
 
     def __str__(self):
         return f"Budget {self.user.username}: {self.amount}"
