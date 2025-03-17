@@ -28,10 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY_DJANGO")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = 'RENDER' not in os.environ
+DEBUG = os.getenv("DEBUG", "False") == "True" if not os.getenv("RENDER") else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:    
@@ -88,18 +87,20 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
+if os.getenv("RENDER"):
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv("DATABASE_URL"),
+            conn_max_age=600)
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600)
-}
 
 # DATABASE_URL='postgresql://USER:PASSWORD@INTERNAL_HOST:PORT/DATABASE'
 
@@ -146,10 +147,8 @@ if not DEBUG:    # Tell Django to copy static assets into a path called `staticf
     # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
     # and renames the files with unique names for each version to support long-term caching
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-else:
-    STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'static'),
-    )
+else:  # Development mode (Local)
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
 # Default primary key field type
