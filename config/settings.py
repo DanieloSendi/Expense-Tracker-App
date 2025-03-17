@@ -157,3 +157,26 @@ else:  # Development mode (Local)
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+import logging
+import sys
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
+
+print(f"DEBUG: {DEBUG}", file=sys.stderr)
+print(f"DATABASE_URL: {os.getenv('DATABASE_URL')}", file=sys.stderr)
+print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}", file=sys.stderr)
