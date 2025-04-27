@@ -1,10 +1,13 @@
 asgiref==3.8.1
+Brotli==1.1.0
 certifi==2025.1.31
 charset-normalizer==3.4.1
+click==8.1.8
 colorama==0.4.6
 dj-database-url==2.3.0
-Django==5.1.7
+Django==5.1.8
 gunicorn==23.0.0
+h11==0.16.0
 idna==3.10
 importlib_metadata==8.6.1
 MarkupSafe==3.0.2
@@ -20,5 +23,6 @@ sqlparse==0.5.3
 typing_extensions==4.12.2
 tzdata==2025.1
 urllib3==2.3.0
+uvicorn==0.34.2
 whitenoise==6.9.0
 zipp==3.21.0
