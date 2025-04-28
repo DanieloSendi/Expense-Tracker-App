@@ -1,11 +1,13 @@
 databases:
   - name: expense-tracker-db
+    region: frankfurt
     plan: free
     databaseName: expense_tracker
     user: expense_tracker_user
 
 services:
   - type: web
+    region: frankfurt
     plan: free
     name: expense-tracker
     runtime: python
