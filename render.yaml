@@ -18,7 +18,7 @@ services:
         fromDatabase:
           name: expense-tracker-db
           property: connectionString
-      - key: SECRET_KEY
+      - key: SECRET_KEY_DJANGO
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
