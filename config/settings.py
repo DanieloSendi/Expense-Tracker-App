@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv("SECRET_KEY_DJANGO")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True" if not os.getenv("RENDER") else False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://expense-tracker-of7n.onrender.com', 'localhost', '127.0.0.1']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:    
