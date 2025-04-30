@@ -39,7 +39,11 @@ def logout_view(request):
 @login_required
 def profile_view(request):
     """View to edit user profile (change email, password)."""
-    tab = request.GET.get("tab", "info") # Show User Data by default
+    tab = request.GET.get("tab", "info")  # Default tab
+
+    # Default forms
+    user_form = UserUpdateForm(instance=request.user)
+    password_form = PasswordChangeForm(request.user)
 
     if request.method == "POST":
         if tab == "info":
@@ -52,12 +56,9 @@ def profile_view(request):
             password_form = PasswordChangeForm(request.user, request.POST)
             if password_form.is_valid():
                 user = password_form.save()
-                update_session_auth_hash(request, user) # Prevents logout after changing password
+                update_session_auth_hash(request, user)  # Keep session active
                 messages.success(request, "Your password has been changed.")
                 return redirect("profile")
-    else:
-        user_form = UserUpdateForm(instance=request.user)
-        password_form = PasswordChangeForm(request.user)
 
     return render(request, "users/profile.html", {
         "user_form": user_form,
