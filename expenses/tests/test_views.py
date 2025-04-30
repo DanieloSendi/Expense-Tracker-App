@@ -4,14 +4,14 @@ from django.contrib.auth.models import User
 from expenses.models import Expense, Category, Budget
 from datetime import date
 
+
 class ExpenseViewsTest(TestCase):
     def setUp(self):
-        """Create a test user, category and sample expenses"""
+        # Set up a test user, category, budget, and a single expense
         self.client = Client()
         self.user = User.objects.create_user(username="testuser", password="testpass")
         self.category = Category.objects.create(name="Food")
         self.budget = Budget.objects.create(user=self.user, amount=500)
-
         self.expense = Expense.objects.create(
             user=self.user,
             category=self.category,
@@ -20,32 +20,50 @@ class ExpenseViewsTest(TestCase):
             description="Dinner"
         )
 
+    # === Home view ===
     def test_home_view_authenticated(self):
-        """Tests the home page for a logged-in user"""
         self.client.login(username="testuser", password="testpass")
         response = self.client.get(reverse("expenses-home"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "expenses/home.html")
         self.assertIn("total_spent", response.context)
-        self.assertIn("budget", response.context)
+
+    def test_home_view_budget_over(self):
+        self.expense.amount = 600  # over budget
+        self.expense.save()
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.get(reverse("expenses-home"))
+        self.assertIn("🔴 You've gone over budget!", response.context["budget_status"])
+
+    def test_home_view_budget_close(self):
+        self.expense.amount = 450  # 90% of budget
+        self.expense.save()
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.get(reverse("expenses-home"))
+        self.assertIn("🟡 You're close to exceeding your budget!", response.context["budget_status"])
 
     def test_home_view_unauthenticated(self):
-        """Tests the home page for a non-logged-in user"""
         response = self.client.get(reverse("expenses-home"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "expenses/home.html")
-        self.assertNotIn("total_spent", response.context)  # No data for non-logged-in users
+        self.assertNotIn("total_spent", response.context)
 
+    # === Expense list view ===
     def test_expense_list_view(self):
-        """Tests the display of the list of expenses (must be logged in)"""
         self.client.login(username="testuser", password="testpass")
         response = self.client.get(reverse("expense-list"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "expenses/expense_list.html")
         self.assertIn("expenses", response.context)
 
-    def test_expense_create_view(self):
-        """Tests adding a new expense"""
+    # === Expense creation view ===
+    def test_expense_create_get(self):
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.get(reverse("expense-create"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "expenses/expense_form.html")
+
+    def test_expense_create_post(self):
         self.client.login(username="testuser", password="testpass")
         response = self.client.post(reverse("expense-create"), {
             "category": self.category.id,
@@ -53,11 +71,17 @@ class ExpenseViewsTest(TestCase):
             "date": date.today().strftime("%Y-%m-%d"),
             "description": "Lunch"
         })
-        self.assertEqual(response.status_code, 302)  # It should redirect when you add
-        self.assertEqual(Expense.objects.count(), 2)  # A new entry should be added
-        
-    def test_expense_update_view(self):
-        """Tests editing an existing expense"""
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Expense.objects.count(), 2)
+
+    # === Expense update view ===
+    def test_expense_update_get(self):
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.get(reverse("expense-update", args=[self.expense.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "expenses/expense_form.html")
+
+    def test_expense_update_post(self):
         self.client.login(username="testuser", password="testpass")
         response = self.client.post(reverse("expense-update", args=[self.expense.id]), {
             "category": self.category.id,
@@ -65,19 +89,31 @@ class ExpenseViewsTest(TestCase):
             "date": date.today().strftime("%Y-%m-%d"),
             "description": "Updated Dinner"
         })
-        self.assertEqual(response.status_code, 302)  # Should redirect
+        self.assertEqual(response.status_code, 302)
         self.expense.refresh_from_db()
         self.assertEqual(self.expense.amount, 100.00)
 
-    def test_expense_delete_view(self):
-        """Tests the removal of the expense"""
+    # === Expense deletion view ===
+    def test_expense_delete_get(self):
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.get(reverse("expense-delete", args=[self.expense.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "expenses/expense_confirm_delete.html")
+
+    def test_expense_delete_post(self):
         self.client.login(username="testuser", password="testpass")
         response = self.client.post(reverse("expense-delete", args=[self.expense.id]))
-        self.assertEqual(response.status_code, 302)  # Should redirect
-        self.assertEqual(Expense.objects.count(), 0)  # Should be removed
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Expense.objects.count(), 0)
 
-    def test_budget_view(self):
-        """Tests budget setting"""
+    # === Budget view ===
+    def test_budget_view_get(self):
+        self.client.login(username="testuser", password="testpass")
+        response = self.client.get(reverse("budget"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "expenses/budget_form.html")
+
+    def test_budget_view_post(self):
         self.client.login(username="testuser", password="testpass")
         response = self.client.post(reverse("budget"), {
             "amount": 1000
@@ -86,8 +122,8 @@ class ExpenseViewsTest(TestCase):
         self.budget.refresh_from_db()
         self.assertEqual(self.budget.amount, 1000)
 
+    # === Export expenses to CSV ===
     def test_export_expenses_csv(self):
-        """Tests exporting expenses to CSV file"""
         self.client.login(username="testuser", password="testpass")
         response = self.client.get(reverse("export-csv"))
         self.assertEqual(response.status_code, 200)
