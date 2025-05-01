@@ -1,17 +1,23 @@
 # Expense-Tracker-App
 
+[![Python Version](https://img.shields.io/badge/python-3.10.11-blue?logo=python)](https://www.python.org/downloads/release/python-31011/)
+[![Django Version](https://img.shields.io/badge/django-5.1.8-blueviolet?logo=django)](https://docs.djangoproject.com/en/5.2/releases/5.1.8/)
+[![CI/CD Status](https://github.com/DanieloSendi/Expense-Tracker-App/actions/workflows/django.yml/badge.svg)](https://github.com/DanieloSendi/Expense-Tracker-App/actions)
+[![Coverage Status](https://coveralls.io/repos/github/DanieloSendi/Expense-Tracker-App/badge.svg?branch=main)](https://coveralls.io/github/DanieloSendi/Expense-Tracker-App?branch=main)
+[![License](https://img.shields.io/github/license/DanieloSendi/Expense-Tracker-App)](https://github.com/DanieloSendi/Expense-Tracker-App/blob/main/LICENSE)
+
 An expense tracking application developed in Django.
 
 ## Features
 
 - User authentication (register, login, logout)
-- Expense management (add, edit, delete, view)
+- Expense management (add, view, edit, delete)
 - Budget tracking with graphic alerts
 - User profile management (username, email update, password change)
 - Responsive UI/UX with Bootstrap
 - CSV export of expenses
-- Dockerized – Runs in a container for easy deployment
-- CI/CD with GitHub Actions – Automated testing, Docker build, and deployment
+- Dockerized - runs in a container for easy deployment
+- CI/CD with GitHub Actions - automated testing, docker build, and deployment in server
 
 ## Installation & Setup
 
@@ -26,7 +32,7 @@ cd Expense-Tracker-App
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Alternative options on Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -70,7 +76,7 @@ The project contains three models in expenses app:
 
 - **Category** - Stores predefined categories of expenses.
 - **Expense** - Stores information about the user's expenses (amount, category, description, date).
-- **Budget** - Stores user's monthly spending limit.
+- **Budget** - Stores the user's budget limit.
 
 ## Dashboard
 
