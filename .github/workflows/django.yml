@@ -70,7 +70,9 @@ jobs:
 
     - name: Upload coverage report to Coveralls
       env:
+        SECRET_KEY_DJANGO: ${{ secrets.SECRET_KEY_DJANGO }}
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        COVERALLS_SERVICE_NAME: github-actions
       run: |
         coveralls
 
